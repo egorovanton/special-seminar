@@ -18,12 +18,12 @@ public class List<E extends Comparable<E>> {
         Node() {}
     }
 
-    int length = 0;
-    Node<E> head = null;
+    private int length = 0;
+    private Node<E> head = null;
 
     public void addFirst(E e) {
         head = new Node<>(e, head);
-        length++;;
+        length++;
     }
 
     public int size() {
@@ -31,23 +31,24 @@ public class List<E extends Comparable<E>> {
     }
 
     public void swap(int i, int j) {
-        if (i == j || length <= i || length <= j || length == 0)
-            return;
+        if (i < 0 || j < 0 || length <= i || length <= j) {
+            throw new IndexOutOfBoundsException();
+        }
 
         int a = min(i, j);
         int b = max(i, j);
 
-        Node<E> current = head;
-        Node<E> elementA = null, elementB = null;
 
-        int k = 0;
+        Node<E> current = new Node<>(null, head);
+        Node<E> beforeA = current, beforeB = current;
+        int k = -1;
         while (current != null) {
-            if (k == a) {
-                elementA = current;
+            if (k + 1 == a) {
+                beforeA = current;
             }
 
-            if (k == b) {
-                elementB = current;
+            if (k + 1 == b) {
+                beforeB = current;
                 break;
             }
 
@@ -55,9 +56,18 @@ public class List<E extends Comparable<E>> {
             k++;
         }
 
-        E tmp = elementA.data;
-        elementA.data = elementB.data;
-        elementB.data = tmp;
+        Node<E> elementA = beforeA.next;
+        Node<E> elementB = beforeB.next;
+        beforeA.next = elementB;
+        beforeB.next = elementA;
+
+        Node<E> temp = elementA.next;
+        elementA.next = elementB.next;
+        elementB.next = temp;
+
+
+        if (a == 0)
+            head = elementB;
 
     }
 
